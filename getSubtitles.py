@@ -1,7 +1,13 @@
+import errno
+import os
+import urllib.request
+
+# MAKE SURE YOU HAVE https://github.com/agonzalezro/python-opensubtitles INSTALLED
 from pythonopensubtitles.opensubtitles import OpenSubtitles
 
+
 class OpenSubs:
-    def __init__(self, username,password):
+    def __init__(self, username, password):
         """Instantiate the shit out of this
 
         Arguments:
@@ -9,16 +15,16 @@ class OpenSubs:
             - password (str): Your OpenSubtitles password
 
         Returns:
-            - Sets all parameters of the class.
+            - Nothing: Sets all parameters of the class.
         """
         self.username = username
         self.password = password
         self.opensubs = OpenSubtitles()
-        self.token = self.opensubs.login(self.username,self.password)
+        self.token = self.opensubs.login(self.username, self.password)
         assert self.token != None, "Incorrect username/password (or something else went wrong when loging in...)"
 
-    def subtitlesLink(self,imdbID, language="eng"):
-        """Get download link for a movie's subtitles
+    def subtitlesInfo(self, imdbID, language="eng"):
+        """Get info from OpenSubtitles for a movie'
 
         Arguments:
             - imdbID (str): IMDB ID of the movie (with or without the "tt" prefix)
@@ -26,10 +32,10 @@ class OpenSubs:
                               Check http://www.loc.gov/standards/iso639-2/php/code_list.php for other language codes
 
         Returns:
-            - subtitlesLink (str): Link to the subtitles file
+            - subtitlesInfo (dict): Dictionary containing information about the movie's subtitles, including download links.
         """
 
-        # Process imdbID
+        # Process imdbID to remove TT
         if(imdbID.startswith("tt")):
             imdbID = imdbID[2:]
 
@@ -43,4 +49,41 @@ class OpenSubs:
         assert returnedDict != None, "OpenSubtitles returned nothing, check that you input the correct IMDBid and you input the correct username and password when instantiating this object."
 
         # Index 0 for top result
-        return returnedDict[0]['SubDownloadLink']
+        return returnedDict[0]
+
+    def downloadSubtitles(self, imdbID, language="eng", outputFolder=None):
+        """Download whatever "subtitlesInfo(self,imdbID, language)" outputs into outputFolder
+
+        Arguments:
+            - imdbID (str): IMDB ID of the movie (with or without the "tt" prefix)
+            - language (str): ISO 639-2 Code for the language you want the subtitles in (English by default)
+                              Check http://www.loc.gov/standards/iso639-2/php/code_list.php for other language codes
+            - outputFolder (str): FULL path to folder where you want to download subtitles.
+                                  * If (outputPath == None) then outputPath = currentWorkingDirectory/subtitles
+                                  * If you specify outputFolder please make sure you're inputting the FULL (and not relative) path,
+                                    as well as making sure the folder already exists
+
+        Returns:
+            - Nothing: Downloads file that subtitlesInfo outputs into outputFolder/imdbID.sub (or whatever other format OpenSubtitles returns)
+        """
+
+        # Output path shenanigans
+        if outputFolder == None:
+            outputFolder = os.getcwd() + "/subtitles"
+            # Create subtitles folder if it doesn't exist
+            try:
+                os.makedirs(outputFolder)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+
+        # Process imdbID to remove TT
+        if(imdbID.startswith("tt")):
+            imdbID = imdbID[2:]
+
+        # Get subtitles info
+        subtitlesInfo = self.subtitlesInfo(imdbID, language)
+
+        # Generate filename and download
+        filename = outputFolder + "/" + str(imdbID) + "." + subtitlesInfo['SubFormat']
+        urllib.request.urlretrieve(subtitlesInfo['SubDownloadLink'], filename)
