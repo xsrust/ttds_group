@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Added by Serafin to avoid uploading python-opensubtitles src folder.
+
+src/
