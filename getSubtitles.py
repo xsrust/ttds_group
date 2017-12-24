@@ -32,7 +32,11 @@ class OpenSubs:
                               Check http://www.loc.gov/standards/iso639-2/php/code_list.php for other language codes
 
         Returns:
-            - subtitlesInfo (dict): Dictionary containing information about the movie's subtitles, including download links.
+            If subtitles found:
+                - subtitlesInfo (dict): Dictionary containing information about the movie's subtitles, including download links.
+            Otherwise:
+                - None
+
         """
 
         # Process imdbID to remove TT
@@ -47,6 +51,10 @@ class OpenSubs:
         # Make sure it downloaded something
         returnedDict = self.opensubs.search_subtitles([searchParams])
         assert returnedDict != None, "OpenSubtitles returned nothing, check that you input the correct IMDBid and you input the correct username and password when instantiating this object."
+
+        # Check not null
+        if not returnedDict:
+            return
 
         # Index 0 for top result
         return returnedDict[0]
@@ -64,7 +72,11 @@ class OpenSubs:
                                     as well as making sure the folder already exists
 
         Returns:
-            - Nothing: Downloads file that subtitlesInfo outputs into outputFolder/imdbID.sub (or whatever other format OpenSubtitles returns)
+            If subtitles found:
+                - Nothing: Downloads file that subtitlesInfo outputs into outputFolder/imdbID.sub (or whatever other format OpenSubtitles returns)
+            Otherwise:
+                If subtitles not available in OpenSubtitles.org return (int) -999
+                If HTTP error (most likely you've reached your daily download limit return (int) HTTP error code)
         """
 
         # Output path shenanigans
@@ -84,6 +96,19 @@ class OpenSubs:
         # Get subtitles info
         subtitlesInfo = self.subtitlesInfo(imdbID, language)
 
+        # If no subtitles found print warning and return -999
+        if not subtitlesInfo:
+            print("No subtitles found for",imdbID)
+            return -999
+
         # Generate filename and download
-        filename = outputFolder + "/" + str(imdbID) + "." + subtitlesInfo['SubFormat']
-        urllib.request.urlretrieve(subtitlesInfo['SubDownloadLink'], filename)
+        filename = outputFolder + "/tt" + str(imdbID) + "." + subtitlesInfo['SubFormat']
+
+        try:
+            # Download
+            urllib.request.urlretrieve(subtitlesInfo['SubDownloadLink'], filename)
+
+        except Exception as e:
+            # If HTTP error print error and return HTTP code (e.g. 404)
+            print(e)
+            return e.code
