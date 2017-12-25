@@ -5,7 +5,7 @@ import sys
 import getSubtitles
 
 # Start downloading from index provided in command line
-start = sys.argv[1]
+start = int(sys.argv[1])
 
 # Username passwords array
 unames_pwds_idx = 0
