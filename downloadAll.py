@@ -28,14 +28,14 @@ not_found = open(output_folder + '/not_found.txt', 'w')
 for idx, x in enumerate(films_json[start:]):
     print(str(start + idx) + ': Downloading subtitles for ' + str(x['title']) + ' with id ' + str(x['id']))
 
-    check = downloader.downloadSubtitles(x['id'], output_folder)
+    download = downloader.downloadSubtitles(x['id'], output_folder)
     # If error 404
-    if (check == 404):
+    if (download == 404):
         # If there are available username-password pairs use a new one
         if(unames_pwds_idx < len(unames_pwds) - 1):
             print("Error 404, trying one more time...")
-            cehck_2 = downloader.downloadSubtitles(x['id'], output_folder)
-            if (check_2 == 404):
+            download_2 = downloader.downloadSubtitles(x['id'], output_folder)
+            if (download_2 == 404):
                 unames_pwds_idx += 1
                 print("Error 404 persists, switching username-password tuple: ", str(unames_pwds[unames_pwds_idx]))
                 downloader = getSubtitles.OpenSubs(unames_pwds[unames_pwds_idx][0], unames_pwds[unames_pwds_idx][1])
@@ -48,7 +48,7 @@ for idx, x in enumerate(films_json[start:]):
             break
 
     # If subtitles not available in OpenSubtitles write to not_found and continue
-    if (check == -999):
+    if (download == -999):
         not_found.write(x['id'] + "\t" + x['title'] + "\t" + str(-999) + "\n")
         continue
 
