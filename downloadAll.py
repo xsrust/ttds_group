@@ -6,10 +6,11 @@ import getSubtitles
 
 # Start downloading from index provided in command line
 start = int(sys.argv[1])
+output_folder = str(sys.argv[2])
 
 # Username passwords array
 unames_pwds_idx = 0
-unames_pwds = [("sera_maza@hotmail.com", "asdfg"), ("serafinmazadominguez@gmail.com", "asdfg"),
+unames_pwds = [("Stiliyan", "SubPassword"), ("sera_maza@hotmail.com", "asdfg"), ("serafinmazadominguez@gmail.com", "asdfg"),
                ("sera_maza@icloud.com", "asdfg"), ("amjolao@gmail.com", "asdfg"), ("afghasdfh@gmail.com", "asdfg")]
 
 # Load films json
@@ -18,38 +19,41 @@ with open('films.json') as file_:
 
 # Instantiate OpenSubtitles downloader from getSubtitles.py
 downloader = getSubtitles.OpenSubs(unames_pwds[unames_pwds_idx][0], unames_pwds[unames_pwds_idx][1])
+print("Logging in with first username-password tuple: ", str(unames_pwds[unames_pwds_idx]))
 
 # Instantiate file for tracking missing subtitles
-notFound = open('notFound.txt', 'w')
+not_found = open(output_folder + '/not_found.txt', 'w')
 
 # Use json from provided index on
 for idx, x in enumerate(films_json[start:]):
-    print(start + idx, ': Downloading subtitles for', x['title'], 'with id', x['id'])
+    print(str(start + idx) + ': Downloading subtitles for ' + str(x['title']) + ' with id ' + str(x['id']))
 
+    check = downloader.downloadSubtitles(x['id'], output_folder)
     # If error 404
-    if (downloader.downloadSubtitles(x['id']) == 404):
-        # Write in notFound file
-        notFound.write(x['id'] + "\t" + x['title'] + "\t" + str(404) + "\n")
-
+    if (check == 404):
         # If there are available username-password pairs use a new one
         if(unames_pwds_idx < len(unames_pwds) - 1):
-            unames_pwds_idx += 1
-            print("Error 404, trying new username-password tuple: ", str(unames_pwds[unames_pwds_idx]))
-            downloader = getSubtitles.OpenSubs(unames_pwds[unames_pwds_idx][0], unames_pwds[unames_pwds_idx][1])
+            print("Error 404, trying one more time...")
+            cehck_2 = downloader.downloadSubtitles(x['id'], output_folder)
+            if (check_2 == 404):
+                unames_pwds_idx += 1
+                print("Error 404 persists, switching username-password tuple: ", str(unames_pwds[unames_pwds_idx]))
+                downloader = getSubtitles.OpenSubs(unames_pwds[unames_pwds_idx][0], unames_pwds[unames_pwds_idx][1])
+                not_found.write(x['id'] + "\t" + x['title'] + "\t" + str(404) + "\n")
+
         # Else finish
         else:
+            not_found.write(x['id'] + "\t" + x['title'] + "\t" + str(404) + "\n")
             print("Sorry, ran out of username-password tuples to use. You'll have to wait a few hours (or register some more emails...)")
             break
 
-    # If subtitles not available in OpenSubtitles write to notFound and continue
-    if (downloader.downloadSubtitles(x['id']) == -999):
-        notFound.write(x['id'] + "\t" + x['title'] + "\t" + str(-999) + "\n")
+    # If subtitles not available in OpenSubtitles write to not_found and continue
+    if (check == -999):
+        not_found.write(x['id'] + "\t" + x['title'] + "\t" + str(-999) + "\n")
         continue
 
-    # Download actual subtitles
-    downloader.downloadSubtitles(x['id'])
 
 # Feedback and close file.
 print("Processed", idx + 1, "films. Last film processed's index = ", start + idx)
 print("Bye.")
-notFound.close()
+not_found.close()
