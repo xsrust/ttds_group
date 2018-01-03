@@ -102,7 +102,13 @@ class OpenSubs:
             return -999
 
         # Generate filename and download
+        isGZ = False
+        isGZ_string = subtitlesInfo['SubDownloadLink'].split(".")[-1]
+        if isGZ_string == "gz":
+            isGZ = True
         filename = outputFolder + "/tt" + str(imdbID) + "." + subtitlesInfo['SubFormat']
+        if isGZ:
+            filename+=".gz"
 
         try:
             # Download
