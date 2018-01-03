@@ -4,9 +4,13 @@ import sys
 
 import getSubtitles
 
+
 # Start downloading from index provided in command line
 start = int(sys.argv[1])
 output_folder = str(sys.argv[2])
+
+# List of files minus their extensions.
+file_names_list = [f[:-4] for f in os.listdir(output_folder) if os.path.isfile(os.path.join(output_folder, f))]
 
 # Username passwords array
 unames_pwds_idx = 0
@@ -14,7 +18,7 @@ unames_pwds = [("Stiliyan", "SubPassword"), ("sera_maza@hotmail.com", "asdfg"), 
                ("sera_maza@icloud.com", "asdfg"), ("amjolao@gmail.com", "asdfg"), ("afghasdfh@gmail.com", "asdfg")]
 
 # Load films json
-with open('films.json') as file_:
+with open('newfilms.json') as file_:
     films_json = json.load(file_)
 
 # Instantiate OpenSubtitles downloader from getSubtitles.py
@@ -26,7 +30,13 @@ not_found = open(output_folder + '/not_found.txt', 'w')
 
 # Use json from provided index on
 for idx, x in enumerate(films_json[start:]):
+
     print(str(start + idx) + ': Downloading subtitles for ' + str(x['title']) + ' with id ' + str(x['id']))
+
+    if str(x['id']) in file_names_list:
+        print("Subtitles for "+str(x['id'])+ " already exists! Skipping...")
+        continue
+
 
     download = downloader.downloadSubtitles(x['id'], output_folder)
     # If error 404
