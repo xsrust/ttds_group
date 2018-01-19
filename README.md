@@ -2,9 +2,9 @@
 This repo contains the code and some of the data used for our TTDS **Movie Genre Classification using Subtitles** group project.
 
 There are three main folders:
-- ```jsons``` contains two jsons created using Scrapy that link movies titles with their IMDb ID and genre(s). There is another file inside the classification folder that contains both of these joined (with duplicates, check classification/README.txt) for more information.
-- ```subtitles-module``` contains the code used for the data collection and data processing part of this project. For more information on this check the readme in this folder.
-- ```classification``` contains the code used for the classification task. For more information on this check the readme on this folder.
+- ```jsons``` contains two jsons created using Scrapy that link movies titles with their IMDb ID and genre(s). There is another json inside the classification folder that contains both of these joined.
+- ```subtitles-module``` contains the code used for the data collection and data processing part of this project. For more information on this check the readme in the [subtitles-module folder](https://github.com/xsrust/ttds_group/tree/master/subtitles-module).
+- ```classification``` contains the code used for the classification task. For more information on this check the readme on this folder.  For more information on this please check the readme in the [classification folder](https://github.com/xsrust/ttds_group/tree/master/classification).
 
 
 ## Contributors:
