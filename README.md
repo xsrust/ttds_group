@@ -1,5 +1,5 @@
 ## [[INFR11145] ](http://www.drps.ed.ac.uk/17-18/dpt/cxinfr11145.htm) Text Technologies for Data Science Group Project 2017-18
-This repo contains the code and some of the data used for our TTDS **Movie Genre Classification using Subtitles** group project.
+This repo contains the code and some of the data used for our TTDS **Movie Genre Classification using Subtitles** group project. The repo also contains our [final report](https://github.com/xsrust/ttds_group/blob/master/ttds-group-project.pdf).
 
 There are three main folders:
 - ```jsons``` contains two jsons created using Scrapy that link movies titles with their IMDb ID and genre(s). There is another json inside the classification folder that contains both of these joined.
