@@ -4,6 +4,7 @@
 cat TrainSubtitles/* > allwords.txt
 perl tokenizer.pl [allwords.txt] feats.dict
 ```
+**WARNING:** The ```allwords.txt``` file could not be uploaded to GitHub due to file size limitations. Download it from [this link](https://drive.google.com/open?id=1kKu6ico7l_-9qW-d5WRevHu__t2AcG8d) instead.
 
 ### To create train, dev and test feature files:
 ```bash
