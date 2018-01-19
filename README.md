@@ -7,10 +7,9 @@ There are three main folders:
 - ```classification``` contains the code used for the classification task. For more information on this check the readme on this folder.
 
 ---
-Contributors:
+## Contributors:
 - Konstantinos Stergiou
 - Sam Rust
 - Serafín Maza Domínguez
 - Simeon Ivanov
 - Stiliyan Emanuilov
----
