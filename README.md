@@ -9,7 +9,7 @@ There are three main folders:
 
 ## Contributors:
 - Konstantinos Stergiou
-- Sam Rust
-- Serafín Maza Domínguez
+- [Sam Rust](https://github.com/xsrust)
+- [Serafín Maza Domínguez](https://github.com/serapoint)
 - Simeon Ivanov
 - Stiliyan Emanuilov
