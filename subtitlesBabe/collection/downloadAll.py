@@ -38,13 +38,13 @@ for idx, x in enumerate(films_json[start:]):
         continue
 
 
-    download = downloader.downloadSubtitles(x['id'], output_folder)
+    download = downloader.downloadSubtitles(x['id'], outputFolder=output_folder)
     # If error 404
     if (download == 404):
         # If there are available username-password pairs use a new one
         if(unames_pwds_idx < len(unames_pwds) - 1):
             print("Error 404, trying one more time...")
-            download_2 = downloader.downloadSubtitles(x['id'], output_folder)
+            download_2 = downloader.downloadSubtitles(x['id'], outputFolder=output_folder)
             if (download_2 == 404):
                 unames_pwds_idx += 1
                 print("Error 404 persists, switching username-password tuple: ", str(unames_pwds[unames_pwds_idx]))
